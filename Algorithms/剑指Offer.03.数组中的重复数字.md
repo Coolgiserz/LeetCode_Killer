@@ -139,6 +139,48 @@ public:
 
 内存消耗：22.6 MB, 在所有 C++ 提交中击败了56.67%的用户
 
+### 实现4
+
+先排序后查找时间复杂度为O(nlogn)，时间上能否更优化呢？
+
+假设没有重复数字，那么排序后数组元素与下标应该是一致的，可以基于这个信息实现优化。检查下标与下标对应元素的一致性，如果不一致则置换。
+
+```c++
+class Solution {
+public:
+    //测试用例： 1. 空数组、 2. 能查到重复得 3. 不能查到重复得
+    //思路1. 1）哈希表计数 2）返回计数为1的结果
+    //思路2. 1）进行排序 2）检查排序后数组与下标是否有矛盾
+
+    //思路3
+    int findRepeatNumber(vector<int>& nums){
+        if(nums.size() == 0){
+            return -1;
+        }
+        int tmp = 0;
+        for(int i=0; i<nums.size(); ++i){
+            while(nums[i] != i){//下标等于nums[i]则正常,不等于则置换
+                if(nums[nums[i]] == nums[i]){
+                    //找到重复了
+                    return nums[i];
+                }else{
+                    //还没找到，置换一下
+                    tmp = nums[nums[i]];
+                    nums[nums[i]] = nums[i];
+                    nums[i] = tmp;
+                }
+            }
+        }
+        return -1;
+    }
+
+};
+```
+
+执行用时：88 ms, 在所有 C++ 提交中击败了78.11%的用户
+
+内存消耗：22.4 MB, 在所有 C++ 提交中击败了85.24%的用户
+
 ## 小结
 
 ### 关于unordered_map的一些笔记
