@@ -38,6 +38,16 @@
 
 ### 思路1: 采用二维辅助数组来保存状态
 
+假设$dp[i][j]$为到(i,j)位置处的最大价值，则$dp[i][j]$只与$dp[i-1][j]$和$dp[i][j-1]$相关。
+
+$dp[i][j]=max(dp[i-1][j], dp[i][j-1])+grid[i][j]$
+
+### 思路2: 空间效率优化-采用一维数组保存状态
+
+实际上，没有必要保存第$i-2$行以前的状态，只需要记录第$i-1$行和第$i$行的部分状态即可。
+
+用一个长度为列数的一维数组，从0到j-1位置保存当前行能拿到礼物的最大价值：$dp[i][0]$, $dp[i][1]$, ……, $dp[i][j-1]$,第j到cols-1位置保存前一行cols-j个格子能拿到礼物的最大价值：$dp[i-1][j]$, $dp[i-1][j+1]$, ……, $dp[i-1][cols-1]$
+
 ## 代码实现
 
 ### 实现1
@@ -69,6 +79,38 @@ public:
 执行用时：4 ms, 在所有 C++ 提交中击败了99.66%的用户
 
 内存消耗：9.2 MB, 在所有 C++ 提交中击败了86.26%的用户
+
+### 实现2
+
+```c++
+class Solution {
+public:
+    int maxValue(vector<vector<int>>& grid) {
+        int n = grid.size();
+        int cols = grid[0].size();
+        vector<int> dp(cols, 0);
+
+        for(int i=0;i<n;++i){
+            for(int j=0;j<cols;++j){
+                int left = 0;
+                int up = 0;
+                if(i>0){
+                    up = dp[j];//(i-1, j)
+                }
+                if(j>0){
+                    left = dp[j-1];//(i, j-1)
+                }
+                dp[j] = max(left, up)+grid[i][j];
+            }
+        }
+        return dp[cols-1];
+    }
+};
+```
+
+执行用时：4 ms, 在所有 C++ 提交中击败了99.66%的用户
+
+内存消耗：8.9 MB, 在所有 C++ 提交中击败了93.82%的用户
 
 ## 题解
 
